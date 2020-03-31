@@ -1,6 +1,6 @@
 const crypto = require('crypto');
 const axios = require('axios');
-const tmdb = require('../tmdb');
+const igdb = require('../igdb');
 
 class FBeamer {
   constructor({ pageAccessToken, verifyToken, appSecret }) {
@@ -69,16 +69,16 @@ class FBeamer {
     const message = obj.message.text;
 
     let responseData;
-    const entities = tmdb.extractEntity(obj.message.nlp.entities, 'intent');
+    const entities = igdb.extractEntity(obj.message.nlp.entities, 'intent');
     if (entities !== null) {
       switch (entities[0]) {
-        case 'movieinfo':
-          const movies = tmdb.extractEntity(obj.message.nlp.entities, 'movie');
-          if (movies !== null) {
-            const movieData = await tmdb.getMovieData(movies[0]);
+        case 'gameinfo':
+          const games = igdb.extractEntity(obj.message.nlp.entities, 'game');
+          if (games !== null) {
+            const gameData = await igdb.getGameData(games[0]);
             responseData = {
-              type: 'movie',
-              text: movieData
+              type: 'game',
+              text: gameData[0]
             };
           }
           else {
@@ -141,13 +141,24 @@ class FBeamer {
     return { userData: obj2, responseData };
   }
 
-  async response(data, userData, responseData) {
+  async response(userData, responseData) {
     switch (responseData.type) {
-      case 'movie':
-        const { userData: { sender }, responseData: { text: { title, overview, release_date, poster_path } } } = await this.messageHandler(data);
-        const response = `Title: ${title}\nRelease date: ${release_date}\nSummary: ${overview}`;
-        await this.img(sender, poster_path);
-        await this.txt(sender, response);
+      case 'game':
+        const { text: { cover: { url }, first_release_date, genres, name, platforms, summary } } = responseData;
+        const releaseDate = new Date(first_release_date * 1000).toUTCString().slice(0, -13).slice(5);
+        let genresString = '';
+        for (let genre of genres) {
+          genresString += `${genre.name}, `;
+        }
+        genresString = genresString.slice(0, -2);
+        let platformsString = '';
+        for (let platform of platforms) {
+          platformsString += `${platform.name}, `;
+        }
+        platformsString = platformsString.slice(0, -2);
+        const response = `Name: ${name}\nRelease date: ${releaseDate}\nSummary: ${summary}\nGenres: ${genresString}\nPlatforms: ${platformsString}`;
+        await this.img(userData.sender, `https:${url}`);
+        await this.txt(userData.sender, response);
         break;
       case 'greetings':
         await this.txt(userData.sender, responseData.text);

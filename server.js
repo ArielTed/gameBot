@@ -25,17 +25,17 @@ const FB = new FBeamer({
 });
 
 app.get('/', (req, res) => FB.registerHook(req, res));
-/*app.post('/', express.json({ verify: FB.verifySignature.call(FB) }));
+app.post('/', express.json({ verify: FB.verifySignature.call(FB) }));
 app.post('/', (req, res, data) => {
   return FB.incoming(req, res, async (data) => {
     try {
       const { userData, responseData } = await FB.messageHandler(data);
-      await FB.response(data, userData, responseData);
+      await FB.response(userData, responseData);
     }
     catch (error) {
       console.log(error);
     }
   });
-});*/
+});
 
 app.listen(PORT, () => console.log(`📡 Running on port ${PORT}`));

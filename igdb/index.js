@@ -13,11 +13,17 @@ const extractEntity = (nlp, entity) => {
   return null;
 }
 
-const getMovieData = async (movie, releaseYear = null) => {
+const getGameData = async (game) => {
   try {
-    const { data } = await axios(`https://api.themoviedb.org/3/search/movie?api_key=${process.env.TMBD}&query=${movie.replace(' ', '+')}`);
-    const { id, title, overview, release_date, poster_path } = data.results[0];
-    return { id, title, overview, release_date, poster_path: `https://image.tmdb.org/t/p/w300_and_h450_bestv2${poster_path}` };
+    const { data } = await axios({
+      method: 'post',
+      url: `https://api-v3.igdb.com/games?search=${game}&fields=name,genres.name,platforms.name,first_release_date,cover.url,summary`,
+      headers: {
+        'Accept': 'application/json',
+        'user-key': process.env.IGDB
+      }
+    });
+    return data;
   }
   catch (err) {
     console.log(err);
@@ -27,5 +33,5 @@ const getMovieData = async (movie, releaseYear = null) => {
 
 module.exports = {
   extractEntity,
-  getMovieData
+  getGameData
 }
