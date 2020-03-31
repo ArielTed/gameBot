@@ -1,0 +1,33 @@
+{
+  "name": "gameBot",
+  "version": "1.0.0",
+  "description": "Video game chatbot on Messenger",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ArielTed/gameBot.git"
+  },
+  "keywords": [
+    "Chatbot",
+    "Video game"
+  ],
+  "author": "Ariel Tedgui",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ArielTed/gameBot/issues"
+  },
+  "homepage": "https://github.com/ArielTed/gameBot#readme",
+  "dependencies": {
+    "axios": "^0.19.2",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "helmet": "^3.22.0"
+  },
+  "engines": {
+    "node": "13.5.0"
+  }
+}
