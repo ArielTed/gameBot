@@ -8,11 +8,13 @@ Introduction
 
 You can ask informations about specific video games, or you can ask for a random game if you don't know what to play tonight !
 
-Example command:
+Example commands:
 ```
 What is Fortnite ?
+Tell me about PUBG.
+What can I play tonight ?
+Suggest me a game.
 ```
-And it returns you different informations about the game Fortnite.
 
 Demo
 -------
