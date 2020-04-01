@@ -1,6 +1,7 @@
 const crypto = require('crypto');
 const axios = require('axios');
 const igdb = require('../igdb');
+const utils = require('../utils');
 
 class FBeamer {
   constructor({ pageAccessToken, verifyToken, appSecret }) {
@@ -88,6 +89,13 @@ class FBeamer {
             }
           }
           break;
+        case 'gamesearch':
+          const gameData = await igdb.randomGameData();
+          responseData = {
+            type: 'randomgame',
+            text: gameData[utils.getRandomInt(0, gameData.length)]
+          };
+          break;
         default:
           responseData = {
             type: 'error',
@@ -143,23 +151,70 @@ class FBeamer {
 
   async response(userData, responseData) {
     switch (responseData.type) {
-      case 'game':
-        const { text: { cover: { url }, first_release_date, genres, name, platforms, summary } } = responseData;
-        const releaseDate = new Date(first_release_date * 1000).toUTCString().slice(0, -13).slice(5);
-        let genresString = '';
-        for (let genre of genres) {
-          genresString += `${genre.name}, `;
+      case 'game': {
+        const { text: { first_release_date, genres, name, platforms, summary } } = responseData;
+        let response = `Name: ${name}\n`;
+        if (first_release_date !== undefined) {
+          const releaseDate = new Date(first_release_date * 1000).toUTCString().slice(0, -13).slice(5);
+          response += `Release date: ${releaseDate}\n`;
         }
-        genresString = genresString.slice(0, -2);
-        let platformsString = '';
-        for (let platform of platforms) {
-          platformsString += `${platform.name}, `;
+        if (summary !== undefined) {
+          response += `Summary: ${summary}\n`;
         }
-        platformsString = platformsString.slice(0, -2);
-        const response = `Name: ${name}\nRelease date: ${releaseDate}\nSummary: ${summary}\nGenres: ${genresString}\nPlatforms: ${platformsString}`;
-        await this.img(userData.sender, `https:${url}`);
+        if (genres !== undefined) {
+          let genresString = '';
+          for (let genre of genres) {
+            genresString += `${genre.name}, `;
+          }
+          genresString = genresString.slice(0, -2);
+          response += `Genres: ${genresString}\n`;
+        }
+        if (platforms !== undefined) {
+          let platformsString = '';
+          for (let platform of platforms) {
+            platformsString += `${platform.name}, `;
+          }
+          platformsString = platformsString.slice(0, -2);
+          response += `Platforms: ${platformsString}`;
+        }
+        if (responseData.text.cover !== undefined) {
+          await this.img(userData.sender, `https:${responseData.text.cover.url}`);
+        }
         await this.txt(userData.sender, response);
         break;
+      }
+      case 'randomgame': {
+        const { text: { first_release_date, genres, name, platforms, summary } } = responseData;
+        let response = `Name: ${name}\n`;
+        if (first_release_date !== undefined) {
+          const releaseDate = new Date(first_release_date * 1000).toUTCString().slice(0, -13).slice(5);
+          response += `Release date: ${releaseDate}\n`;
+        }
+        if (summary !== undefined) {
+          response += `Summary: ${summary}\n`;
+        }
+        if (genres !== undefined) {
+          let genresString = '';
+          for (let genre of genres) {
+            genresString += `${genre.name}, `;
+          }
+          genresString = genresString.slice(0, -2);
+          response += `Genres: ${genresString}\n`;
+        }
+        if (platforms !== undefined) {
+          let platformsString = '';
+          for (let platform of platforms) {
+            platformsString += `${platform.name}, `;
+          }
+          platformsString = platformsString.slice(0, -2);
+          response += `Platforms: ${platformsString}`;
+        }
+        if (responseData.text.cover !== undefined) {
+          await this.img(userData.sender, `https:${responseData.text.cover.url}`);
+        }
+        await this.txt(userData.sender, response);
+        break;
+      }
       case 'greetings':
         await this.txt(userData.sender, responseData.text);
         break;
