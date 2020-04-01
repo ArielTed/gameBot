@@ -45,10 +45,11 @@ class FBeamer {
           const signature = req.headers['x-hub-signature'].substr(5);
           const hash = crypto.createHmac('sha1', this.appSecret).update(buffer, 'utf-8').digest('hex');
           if (signature !== hash)
-            throw 'Error verifying x hub signature';
+            throw 'Error verifying x-hub-signature';
         }
         catch (error) {
           console.log(error);
+          res.status(401).json('Acces Denied.');
         }
       }
     }
@@ -85,7 +86,7 @@ class FBeamer {
           else {
             responseData = {
               type: 'error',
-              text: 'Sorry, I did not understand.'
+              text: utils.error[utils.getRandomInt(0, utils.error.length)]
             }
           }
           break;
@@ -99,7 +100,7 @@ class FBeamer {
         default:
           responseData = {
             type: 'error',
-            text: 'Sorry, I did not understand.'
+            text: utils.error[utils.getRandomInt(0, utils.error.length)]
           }
       }
     }
@@ -118,25 +119,25 @@ class FBeamer {
         case 'greetings':
           responseData = {
             type: 'greetings',
-            text: 'Hello, nice to meet you.'
+            text: utils.greetings[utils.getRandomInt(0, utils.greetings.length)]
           }
           break;
         case 'bye':
           responseData = {
             type: 'bye',
-            text: 'Bye, see you soon!'
+            text: utils.bye[utils.getRandomInt(0, utils.bye.length)]
           }
           break;
         case 'thanks':
           responseData = {
             type: 'thanks',
-            text: 'You\'re welcome.'
+            text: utils.thanks[utils.getRandomInt(0, utils.thanks.length)]
           }
           break;
         default:
           responseData = {
             type: 'error',
-            text: 'Sorry, I did not understand.'
+            text: utils.error[utils.getRandomInt(0, utils.error.length)]
           }
       }
     }
@@ -228,7 +229,7 @@ class FBeamer {
         await this.txt(userData.sender, responseData.text);
         break;
       default:
-        await this.txt(userData.sender, 'Sorry, I did not understand.');
+        await this.txt(userData.sender, utils.error[utils.getRandomInt(0, utils.error.length)]);
     }
   }
 

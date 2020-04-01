@@ -25,8 +25,7 @@ const FB = new FBeamer({
 });
 
 app.get('/', (req, res) => FB.registerHook(req, res));
-app.post('/', express.json({ verify: FB.verifySignature.call(FB) }));
-app.post('/', (req, res, data) => {
+app.post('/', express.json({ verify: FB.verifySignature.call(FB) }), (req, res, data) => {
   return FB.incoming(req, res, async (data) => {
     try {
       const { userData, responseData } = await FB.messageHandler(data);
