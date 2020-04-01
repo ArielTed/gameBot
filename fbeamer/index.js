@@ -2,6 +2,7 @@ const crypto = require('crypto');
 const axios = require('axios');
 const igdb = require('../igdb');
 const utils = require('../utils');
+require('dotenv').config();
 
 class FBeamer {
   constructor({ pageAccessToken, verifyToken, appSecret }) {
@@ -278,4 +279,8 @@ class FBeamer {
   }
 }
 
-module.exports = FBeamer;
+module.exports = new FBeamer({
+  pageAccessToken: process.env.PAGE_ACCESS_TOKEN,
+  verifyToken: process.env.VERIFY_TOKEN,
+  appSecret: process.env.APP_SECRET
+});
