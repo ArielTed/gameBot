@@ -23,7 +23,7 @@ const getGameData = async (game) => {
       headers: {
         'Accept': 'application/json',
         'Client-ID': process.env.IGDB_CLIENT_ID,
-        'Authorization': `Bearer ${authorization.data.text.access_token}`
+        'Authorization': `Bearer ${authorization.data.access_token}`
       }
     });
     return data;
@@ -43,7 +43,7 @@ const randomGameData = async () => {
       headers: {
         'Accept': 'application/json',
         'Client-ID': process.env.IGDB_CLIENT_ID,
-        'Authorization': `Bearer ${authorization.data.text.access_token}`
+        'Authorization': `Bearer ${authorization.data.access_token}`
       }
     });
     return data;
