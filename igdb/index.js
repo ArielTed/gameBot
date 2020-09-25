@@ -16,12 +16,14 @@ const extractEntity = (nlp, entity) => {
 
 const getGameData = async (game) => {
   try {
+    const authorization = await axios.post(`https://id.twitch.tv/oauth2/token?client_id=${process.env.IGDB_CLIENT_ID}&client_secret=${process.env.IGDB_CLIENT_SECRET}&grant_type=client_credentials`);
     const { data } = await axios({
       method: 'post',
       url: `https://api-v3.igdb.com/games?search=${game}&fields=name,genres.name,platforms.name,first_release_date,cover.url,summary`,
       headers: {
         'Accept': 'application/json',
-        'user-key': process.env.IGDB
+        'Client-ID': process.env.IGDB_CLIENT_ID,
+        'Authorization': `Bearer ${authorization.data.text.access_token}`
       }
     });
     return data;
@@ -34,12 +36,14 @@ const getGameData = async (game) => {
 
 const randomGameData = async () => {
   try {
+    const authorization = await axios.post(`https://id.twitch.tv/oauth2/token?client_id=${process.env.IGDB_CLIENT_ID}&client_secret=${process.env.IGDB_CLIENT_SECRET}&grant_type=client_credentials`);
     const { data } = await axios({
       method: 'post',
       url: `https://api-v3.igdb.com/games?search=${utils.games[utils.getRandomInt(0, utils.games.length)]}&fields=name,genres.name,platforms.name,first_release_date,cover.url,summary`,
       headers: {
         'Accept': 'application/json',
-        'user-key': process.env.IGDB
+        'Client-ID': process.env.IGDB_CLIENT_ID,
+        'Authorization': `Bearer ${authorization.data.text.access_token}`
       }
     });
     return data;
